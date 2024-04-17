@@ -10,9 +10,8 @@ jobs:
               uses: actions/checkout@v2
 
             - name: Cypress run
-              uses: cypress-io/github-action@v3
+              uses: cypress-io/github-action@v6.6.1
               with:
-                project: ./cypress
                 browser: firefox
-                start: npm start
+                start: npx cypress run
 
