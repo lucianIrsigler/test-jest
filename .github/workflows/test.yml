@@ -9,10 +9,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      CONNECTION_URI: 'your_connection_uri_here'
+      CONNECTION_URI: 'balls'
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
       
       - name: Display CONNECTION_URI
-        run: echo $CONNECTION_URI
+        run: node test1.js
