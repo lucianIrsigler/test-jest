@@ -1,35 +1,18 @@
-name: "Build"
+name: Example Workflow
+
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   build:
-    name: Build
     runs-on: ubuntu-latest
-
+    env:
+      CONNECTION_URI: 'your_connection_uri_here'
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: "14"
-
-      - name: Start mongo
-        id: start-mongo
-        run: docker run --rm -d -p 27017:27017 --name mongo  mongo:6.0 --replSet test --bind_ip_all
-
-      - name: Initialize MongoDB Replica Set
-        run: |
-          sleep 5 # Give mongo a chance to start up
-          docker run --rm mongo:6.0 mongosh --host 172.17.0.1 --eval 'rs.initiate({_id: "test", members: [{_id: 0, host: "172.17.0.1:27017"}]})'
-      - name: Add users
-        run: |
-          docker run --rm mongo:6.0 mongosh --host 172.17.0.1 --eval 'db.Users.insertOne({name: "admin",email:"admin@gmail.com",role:"admin"})'
-      - name: Add users
-        run: |
-            node test.js
-      - name: Check users
-        run: |
-          docker run --rm mongo:6.0 mongosh --host 172.17.0.1 --eval 'db.Users.find()''
-      - name: Stop MongoDB
-        run: |
-          docker rm -f mongo
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Display CONNECTION_URI
+        run: echo $CONNECTION_URI
