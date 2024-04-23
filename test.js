@@ -4,20 +4,22 @@ const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:42069/test-db?r
 
 async function connectAndExit() {
     try {
-        setTimeout(() => {
-            mongoose.connect(mongoUri, {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-            });
-         }, 1000);
+        // Connect to MongoDB
+        await mongoose.connect(mongoUri, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
 
+        console.log('Connected to MongoDB');
 
+        // Define the user schema
         const userSchema = new mongoose.Schema({
             name: String,
             email: String,
             password: String,
         });
 
+        // Create a model based on the schema
         const User = mongoose.model('User', userSchema);
 
         // Create a new user
@@ -29,19 +31,13 @@ async function connectAndExit() {
 
         // Save the user to the database
         await newUser.save();
-
-        console.log('User created:', mongoose.model('User').find());
-        console.log('Connected to MongoDB');
-
-        // Perform any database-related setup or testing here
+        console.log('User created:', newUser);
 
         // Close the MongoDB connection
         await mongoose.disconnect();
         console.log('Disconnected from MongoDB');
     } catch (err) {
         console.error('Error connecting to MongoDB:', err);
-    } finally {
-        process.exit(0); // Ensure the process exits
     }
 }
 
