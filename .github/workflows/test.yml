@@ -10,7 +10,7 @@ jobs:
         mongo:
           image: "mongo:4.4.4"
           ports:
-            - 27017:27017
+            - 27018:27017
           options: >-
             --health-cmd "mongo --eval 'db.runCommand({ ping: 1 })'"
             --health-interval 10s
@@ -33,7 +33,7 @@ jobs:
 
     - name: Add MongoDB user
       run: |
-        mongo --host localhost --port 27017 --eval "db.getSiblingDB('admin').createUser({ user: 'username', pwd: 'password', roles: [{ role: 'readWrite', db: 'mydatabase' }] })"
+        mongo --host localhost --port 27018 --eval "db.getSiblingDB('admin').createUser({ user: 'username', pwd: 'password', roles: [{ role: 'readWrite', db: 'mydatabase' }] })"
       
     - run: npm install
 
