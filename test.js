@@ -33,6 +33,10 @@ async function connectAndExit() {
         await newUser.save();
         console.log('User created:', newUser);
 
+        const queryFilter = { name: 'John Doe' }; // For example, find a user with name 'John Doe'
+        const users = await User.find(queryFilter);
+        console.log('Users found:', users);
+
         // Close the MongoDB connection
         await mongoose.disconnect();
         console.log('Disconnected from MongoDB');
