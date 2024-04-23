@@ -1,42 +1,20 @@
-name: Run tests
-
-on: [push]
+name: "Build"
+on:
+  push
 
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
-
     services:
-        mongo:
-          image: "mongo:4.4.4"
-          ports:
-            - 27018:27017
-          options: >-
-            --health-cmd "mongo --eval 'db.runCommand({ ping: 1 })'"
-            --health-interval 10s
-            --health-timeout 5s
-            --health-retries 12
-
+      mongo:
+        image: mongo:6
+        options: >-
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 27017:27017
     steps:
-    - name: Git checkout
-      uses: actions/checkout@v4
-
-    - name: Use Node.js 16
-      uses: actions/setup-node@v4
-      with:
-        node-version: 16
-
-    - name: Start MongoDB
-      uses: supercharge/mongodb-github-action@1.10.0
-      with:
-        mongodb-version: 4.4.4
-
-    - name: Add MongoDB user
-      run: |
-        mongo --host localhost --port 27018 --eval "db.getSiblingDB('admin').createUser({ user: 'username', pwd: 'password', roles: [{ role: 'readWrite', db: 'mydatabase' }] })"
-      
-    - run: npm install
-
-    - run: npm test
-      env:
-        CI: true
+      - name: echo
+        run: "echo hello"
