@@ -21,7 +21,6 @@ jobs:
         mongodb-version: 4.4.4
         mongodb-replica-set: test-rs
         mongodb-port: 42069
-        mongodb-db: test-db
 
     - name: Install dependencies
       run: npm install

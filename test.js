@@ -29,8 +29,8 @@ async function connectAndExit() {
 
         // Save the user to the database
         await newUser.save();
-        
-        console.log('User created:', newUser);
+
+        console.log('User created:', mongoose.model('User').find());
         console.log('Connected to MongoDB');
 
         // Perform any database-related setup or testing here
