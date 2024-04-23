@@ -1,55 +1,37 @@
-name: Local MongoDB Workflow
+name: Setup MongoDB and Add User
 
 on:
-  workflow_dispatch:
   push:
     branches:
-      - dev
+      - main
+  pull_request:
 
 jobs:
-  local-mongodb:
-    runs-on: ubuntu-latest  # Adjust as needed based on the runner
+  setup-mongodb:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      # Install MongoDB shell
-      - name: Install MongoDB shell
-        run: |
-          # Add the MongoDB repository
-          wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add -
-          echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
-          sudo apt-get update
-          sudo apt-get install -y mongodb-org-shell
+    - name: Set up MongoDB container
+      run: |
+        docker run -d --name mongodb-container -p 27017:27017 mongo:latest
 
-      - name: Setup local MongoDB instance
-        uses: supercharge/mongodb-github-action@1.10.0
-        with:
-          mongodb-version: '4.4'  # Specify the MongoDB version you want to use
-          mongodb-db: 'mydatabase'  # Optional: specify a database name to use
-          mongodb-username: 'admin'  # Specify the username for the MongoDB instance
-          mongodb-password: 'adminpass'  # Specify the password for the MongoDB instance
-        id: mongo-setup
+    - name: Wait for MongoDB to be ready
+      run: |
+        echo "Waiting for MongoDB to start..."
+        sleep 30  # Give MongoDB some time to start up
 
-      - name: Create a user in the local MongoDB instance
-        run: |
-          # Retrieve the MongoDB URI from the action output
-          MONGODB_URI="${{ steps.mongo-setup.outputs.mongodb-uri }}"
+    - name: Create MongoDB user
+      run: |
+        mongo admin --host 127.0.0.1 --port 27017 --eval "db.createUser({user: 'username', pwd: 'password', roles: [{role: 'readWrite', db: 'mydatabase'}]})"
+      
+    - name: Display MongoDB users
+      run: |
+        mongo admin --host 127.0.0.1 --port 27017 --eval "db.getUsers()"
 
-          # Define the user details
-          USERNAME="testuser"
-          PASSWORD="testpassword"
-
-          # Connect to the local MongoDB instance and create a new user
-          mongo $MONGODB_URI --eval "db.createUser({
-            user: '$USERNAME',
-            pwd: '$PASSWORD',
-            roles: [
-              { role: 'readWrite', db: 'mydatabase' }
-            ]
-          })"
-
-          # Output a success message if the user creation is successful
-          echo "User '$USERNAME' created successfully in the local MongoDB instance."
-
+    - name: Clean up
+      run: |
+        docker stop mongodb-container
+        docker rm mongodb-container
