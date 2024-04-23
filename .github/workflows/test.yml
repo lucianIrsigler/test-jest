@@ -3,7 +3,7 @@ name: Setup MongoDB and Add User
 on:
   push:
     branches:
-      - dev
+      - main
   pull_request:
 
 jobs:
@@ -25,11 +25,11 @@ jobs:
 
     - name: Create MongoDB user
       run: |
-        docker exec mongodb-container mongo admin --eval "db.createUser({user: 'username', pwd: 'password', roles: [{role: 'readWrite', db: 'mydatabase'}]})"
+        docker exec mongodb-container /usr/bin/mongo admin --eval "db.createUser({user: 'username', pwd: 'password', roles: [{role: 'readWrite', db: 'mydatabase'}]})"
 
     - name: Display MongoDB users
       run: |
-        docker exec mongodb-container mongo admin --eval "db.getUsers()"
+        docker exec mongodb-container /usr/bin/mongo admin --eval "db.getUsers()"
 
     - name: Clean up
       run: |
