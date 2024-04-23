@@ -8,6 +8,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "14"
+
       - name: Start mongo
         id: start-mongo
         run: docker run --rm -d -p 27017:27017 --name mongo  mongo:6.0 --replSet test --bind_ip_all
@@ -16,9 +21,15 @@ jobs:
         run: |
           sleep 5 # Give mongo a chance to start up
           docker run --rm mongo:6.0 mongosh --host 172.17.0.1 --eval 'rs.initiate({_id: "test", members: [{_id: 0, host: "172.17.0.1:27017"}]})'
-      - name: Test MongoDB
+      - name: Add users
         run: |
-          docker run --rm mongo:6.0 mongosh --host 172.17.0.1 --eval 'db.Users.insertOne({name: "admin",email:"test@gmail.com",role:"admin"})'
+          docker run --rm mongo:6.0 mongosh --host 172.17.0.1 --eval 'db.Users.insertOne({name: "admin",email:"admin@gmail.com",role:"admin"})'
+      - name: Add users
+        run: |
+            node test.js
+      - name: Check users
+        run: |
+          docker run --rm mongo:6.0 mongosh --host 172.17.0.1 --eval 'db.Users.find()''
       - name: Stop MongoDB
         run: |
           docker rm -f mongo
