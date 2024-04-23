@@ -5,8 +5,7 @@
     "main": "index.js",
     "scripts": {
         "test": "jest",
-        "deploy":"git add . && git commit -m 'deploy' && git push origin dev"
-
+        "deploy": "git add . && git commit -m 'deploy' && git push origin dev"
     },
     "author": "Your Name",
     "license": "MIT",
@@ -14,6 +13,7 @@
         "jest": "^27.0.6"
     },
     "dependencies": {
-        "cypress": "^13.7.3"
+        "cypress": "^13.7.3",
+        "mongodb": "^6.5.0"
     }
 }
