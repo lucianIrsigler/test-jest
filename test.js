@@ -1,7 +1,7 @@
 const MongoClient = require('mongodb').MongoClient;
 
 // Connection URL
-const url = 'mongodb://172.17.0.1:27017/';
+const url = 'mongodb://127.0.0.1:3000/compressors=disabled&gssapiServiceName=mongodb';
 
 // Database Name
 const dbName = 'test';

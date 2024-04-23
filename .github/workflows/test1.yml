@@ -26,6 +26,6 @@ jobs:
 
     - run: npm install
 
-    - run: npm test
+    - run: node test.js
       env:
         CI: true

@@ -1,11 +1,7 @@
 name: Test React Native App
 
 on:
-  pull_request:
   workflow_dispatch:
-  push:
-    branches:
-      - dev
 
 jobs:
   unit-test:
