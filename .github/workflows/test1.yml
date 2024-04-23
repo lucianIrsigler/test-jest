@@ -17,7 +17,7 @@ jobs:
       
       - name: Start mongo
         id: start-mongo
-        run: docker run --rm -d -p 27017:27017 --name mongo  mongo:4.4.4 --replSet test --bind_ip_all
+        run: docker run --rm -d -p 27017:27018 --name mongo  mongo:4.4.4 --replSet test --bind_ip_all
 
 
       - name: Setup local MongoDB instance
